@@ -6,7 +6,7 @@ import YAML from 'yaml';
 
 const swaggerDocument = YAML.parse(fs.readFileSync('./user-api.yaml', 'utf8'));
 
-const db = mysql.createConnection({ host: "localhost", user:"root", database: "healthy tracker", password: ""});
+const db = mysql.createConnection({ host: "localhost", user:"root", database: "health_trecker", password: ""});
 const app = express();
 app.use(express.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -17,8 +17,8 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/users', (req, res) => {
   db.query('SELECT id_user, nama, email FROM tb_user', (err, results) => {
     if (err) {
-        console.error("Error fetching users:", err);
-        return res.status(500).send(err);
+      console.error("Error fetching users:", err);
+      return res.status(500).send(err);
     }
     res.json(results);
   });
@@ -33,7 +33,7 @@ app.post('/users', (req, res) => {
       if (err) {
         console.error("Error creating user:", err);
         return res.status(500).send(err);
-    }
+      }
       res.status(201).json({ id_user: result.insertId, nama, email });
     }
   );
@@ -43,7 +43,10 @@ app.post('/users', (req, res) => {
 app.get('/users/:id', (req, res) => {
   const userId = parseInt(req.params.id);
   db.query('SELECT id_user, nama, email FROM tb_user WHERE id_user = ?', [userId], (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error fetching user by ID:", err);
+      return res.status(500).send(err);
+    }
     if (results.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -58,7 +61,10 @@ app.put('/users/:id', (req, res) => {
   db.query('UPDATE tb_user SET nama = ?, email = ?, password = ? WHERE id_user = ?',
     [nama, email, password, userId],
     (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error updating user:", err);
+        return res.status(500).send(err);
+      }
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'User not found' });
       }
@@ -71,7 +77,10 @@ app.put('/users/:id', (req, res) => {
 app.delete('/users/:id', (req, res) => {
   const userId = parseInt(req.params.id);
   db.query('DELETE FROM tb_user WHERE id_user = ?', [userId], (err, result) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error deleting user:", err);
+      return res.status(500).send(err);
+    }
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -84,7 +93,10 @@ app.delete('/users/:id', (req, res) => {
 // Get all traineers
 app.get('/traineers', (req, res) => {
   db.query('SELECT id_traineer, nama, spesialis, email FROM tb_traineer', (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error fetching traineers:", err);
+      return res.status(500).send(err);
+    }
     res.json(results);
   });
 });
@@ -95,7 +107,10 @@ app.post('/traineers', (req, res) => {
   db.query('INSERT INTO tb_traineer (nama, spesialis, email, password) VALUES (?, ?, ?, ?)',
     [nama, spesialis, email, password],
     (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error creating traineer:", err);
+        return res.status(500).send(err);
+      }
       res.status(201).json({ id_traineer: result.insertId, nama, spesialis, email });
     }
   );
@@ -105,7 +120,10 @@ app.post('/traineers', (req, res) => {
 app.get('/traineers/:id', (req, res) => {
   const traineerId = parseInt(req.params.id);
   db.query('SELECT id_traineer, nama, spesialis, email FROM tb_traineer WHERE id_traineer = ?', [traineerId], (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error fetching traineer by ID:", err);
+      return res.status(500).send(err);
+    }
     if (results.length === 0) {
       return res.status(404).json({ message: 'Traineer not found' });
     }
@@ -120,7 +138,10 @@ app.put('/traineers/:id', (req, res) => {
   db.query('UPDATE tb_traineer SET nama = ?, spesialis = ?, email = ?, password = ? WHERE id_traineer = ?',
     [nama, spesialis, email, password, traineerId],
     (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error updating traineer:", err);
+        return res.status(500).send(err);
+      }
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'Traineer not found' });
       }
@@ -133,7 +154,10 @@ app.put('/traineers/:id', (req, res) => {
 app.delete('/traineers/:id', (req, res) => {
   const traineerId = parseInt(req.params.id);
   db.query('DELETE FROM tb_traineer WHERE id_traineer = ?', [traineerId], (err, result) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error deleting traineer:", err);
+      return res.status(500).send(err);
+    }
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Traineer not found' });
     }
@@ -146,7 +170,10 @@ app.delete('/traineers/:id', (req, res) => {
 // Get all jadwals
 app.get('/jadwals', (req, res) => {
   db.query('SELECT id_jadwal, id_user, id_traineer, tanggal, waktu, jenis_latihan FROM tb_jadwal', (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error fetching jadwals:", err);
+      return res.status(500).send(err);
+    }
     res.json(results);
   });
 });
@@ -158,7 +185,10 @@ app.post('/jadwals', (req, res) => {
               VALUES (?, ?, ?, ?, ?)`,
     [id_user, id_traineer, tanggal, waktu, jenis_latihan],
     (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error creating jadwal:", err);
+        return res.status(500).send(err);
+      }
       res.status(201).json({ id_jadwal: result.insertId, id_user, id_traineer, tanggal, waktu, jenis_latihan });
     }
   );
@@ -168,7 +198,10 @@ app.post('/jadwals', (req, res) => {
 app.get('/jadwals/:id', (req, res) => {
   const jadwalId = parseInt(req.params.id);
   db.query('SELECT id_jadwal, id_user, id_traineer, tanggal, waktu, jenis_latihan FROM tb_jadwal WHERE id_jadwal = ?', [jadwalId], (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error fetching jadwal by ID:", err);
+      return res.status(500).send(err);
+    }
     if (results.length === 0) {
       return res.status(404).json({ message: 'Jadwal not found' });
     }
@@ -183,7 +216,10 @@ app.put('/jadwals/:id', (req, res) => {
   db.query('UPDATE tb_jadwal SET id_user = ?, id_traineer = ?, tanggal = ?, waktu = ?, jenis_latihan = ? WHERE id_jadwal = ?',
     [id_user, id_traineer, tanggal, waktu, jenis_latihan, jadwalId],
     (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error updating jadwal:", err);
+        return res.status(500).send(err);
+      }
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'Jadwal not found' });
       }
@@ -196,7 +232,10 @@ app.put('/jadwals/:id', (req, res) => {
 app.delete('/jadwals/:id', (req, res) => {
   const jadwalId = parseInt(req.params.id);
   db.query('DELETE FROM tb_jadwal WHERE id_jadwal = ?', [jadwalId], (err, result) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error deleting jadwal:", err);
+      return res.status(500).send(err);
+    }
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Jadwal not found' });
     }
@@ -209,7 +248,10 @@ app.delete('/jadwals/:id', (req, res) => {
 // Get all minum entries
 app.get('/minum', (req, res) => {
   db.query('SELECT id_minum, id_user, tanggal, waktu, jumlah_air FROM tb_minum', (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error fetching minum entries:", err);
+      return res.status(500).send(err);
+    }
     res.json(results);
   });
 });
@@ -220,7 +262,10 @@ app.post('/minum', (req, res) => {
   db.query('INSERT INTO tb_minum (id_user, tanggal, waktu, jumlah_air) VALUES (?, ?, ?, ?)',
     [id_user, tanggal, waktu, jumlah_air],
     (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error creating minum entry:", err);
+        return res.status(500).send(err);
+      }
       res.status(201).json({ id_minum: result.insertId, id_user, tanggal, waktu, jumlah_air });
     }
   );
@@ -230,7 +275,10 @@ app.post('/minum', (req, res) => {
 app.get('/minum/:id', (req, res) => {
   const minumId = parseInt(req.params.id);
   db.query('SELECT id_minum, id_user, tanggal, waktu, jumlah_air FROM tb_minum WHERE id_minum = ?', [minumId], (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error fetching minum entry by ID:", err);
+      return res.status(500).send(err);
+    }
     if (results.length === 0) {
       return res.status(404).json({ message: 'Minum entry not found' });
     }
@@ -245,7 +293,10 @@ app.put('/minum/:id', (req, res) => {
   db.query('UPDATE tb_minum SET id_user = ?, tanggal = ?, waktu = ?, jumlah_air = ? WHERE id_minum = ?',
     [id_user, tanggal, waktu, jumlah_air, minumId],
     (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error updating minum entry:", err);
+        return res.status(500).send(err);
+      }
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'Minum entry not found' });
       }
@@ -258,7 +309,10 @@ app.put('/minum/:id', (req, res) => {
 app.delete('/minum/:id', (req, res) => {
   const minumId = parseInt(req.params.id);
   db.query('DELETE FROM tb_minum WHERE id_minum = ?', [minumId], (err, result) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error deleting minum entry:", err);
+      return res.status(500).send(err);
+    }
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Minum entry not found' });
     }
@@ -271,7 +325,10 @@ app.delete('/minum/:id', (req, res) => {
 // Get all progress entries
 app.get('/progress', (req, res) => {
   db.query('SELECT id_progress, id_user, tanggal, jumlah_langkah, kalori_harian, kalori_mingguan, kalori_bulanan FROM tb_progress', (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error fetching progress entries:", err);
+      return res.status(500).send(err);
+    }
     res.json(results);
   });
 });
@@ -282,7 +339,10 @@ app.post('/progress', (req, res) => {
   db.query('INSERT INTO tb_progress (id_user, tanggal, jumlah_langkah, kalori_harian, kalori_mingguan, kalori_bulanan) VALUES (?, ?, ?, ?, ?, ?)',
     [id_user, tanggal, jumlah_langkah, kalori_harian, kalori_mingguan, kalori_bulanan],
     (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error creating progress entry:", err);
+        return res.status(500).send(err);
+      }
       res.status(201).json({ id_progress: result.insertId, id_user, tanggal, jumlah_langkah, kalori_harian, kalori_mingguan, kalori_bulanan });
     }
   );
@@ -292,7 +352,10 @@ app.post('/progress', (req, res) => {
 app.get('/progress/:id', (req, res) => {
   const progressId = parseInt(req.params.id);
   db.query('SELECT id_progress, id_user, tanggal, jumlah_langkah, kalori_harian, kalori_mingguan, kalori_bulanan FROM tb_progress WHERE id_progress = ?', [progressId], (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error fetching progress entry by ID:", err);
+      return res.status(500).send(err);
+    }
     if (results.length === 0) {
       return res.status(404).json({ message: 'Progress entry not found' });
     }
@@ -307,7 +370,10 @@ app.put('/progress/:id', (req, res) => {
   db.query('UPDATE tb_progress SET id_user = ?, tanggal = ?, jumlah_langkah = ?, kalori_harian = ?, kalori_mingguan = ?, kalori_bulanan = ? WHERE id_progress = ?',
     [id_user, tanggal, jumlah_langkah, kalori_harian, kalori_mingguan, kalori_bulanan, progressId],
     (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error updating progress entry:", err);
+        return res.status(500).send(err);
+      }
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'Progress entry not found' });
       }
@@ -320,12 +386,15 @@ app.put('/progress/:id', (req, res) => {
 app.delete('/progress/:id', (req, res) => {
   const progressId = parseInt(req.params.id);
   db.query('DELETE FROM tb_progress WHERE id_progress = ?', [progressId], (err, result) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error("Error deleting progress entry:", err);
+      return res.status(500).send(err);
+    }
     if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Progress entry not found' });
-      }
-      res.status(204).send();
-    });
+      return res.status(404).json({ message: 'Progress entry not found' });
+    }
+    res.status(204).send();
   });
-  
-  app.listen(3000, () => console.log('server berjalan di http://localhost:3000'));
+});
+
+app.listen(3000, () => console.log('server berjalan di http://localhost:3000'));
