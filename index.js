@@ -16,7 +16,10 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Get all users
 app.get('/users', (req, res) => {
   db.query('SELECT id_user, nama, email FROM tb_user', (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+        console.error("Error fetching users:", err);
+        return res.status(500).send(err);
+    }
     res.json(results);
   });
 });
@@ -27,7 +30,10 @@ app.post('/users', (req, res) => {
   db.query('INSERT INTO tb_user (nama, email, password) VALUES (?, ?, ?)',
     [nama, email, password],
     (err, result) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.error("Error creating user:", err);
+        return res.status(500).send(err);
+    }
       res.status(201).json({ id_user: result.insertId, nama, email });
     }
   );
