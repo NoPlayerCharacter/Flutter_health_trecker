@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="utf8mb4" collation="utf8mb4_general_ci">healthy tracker</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="tb_jadwal" view="colnames">
+<left>154</left>
+<top>212</top>
+<width>118</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `tb_jadwal` (
+  `id_jadwal` int(10) NOT NULL AUTO_INCREMENT,
+  `id_user` int(10) NOT NULL,
+  `id_traineer` int(10) NOT NULL,
+  `tanggal` date NOT NULL,
+  `waktu` datetime NOT NULL,
+  `jenis_latihan` varchar(255) NOT NULL,
+  PRIMARY KEY (`id_jadwal`),
+  KEY `id_user` (`id_user`),
+  KEY `id_traineer` (`id_traineer`),
+  CONSTRAINT `tb_jadwal_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `tb_user` (`id_user`),
+  CONSTRAINT `tb_jadwal_ibfk_2` FOREIGN KEY (`id_traineer`) REFERENCES `tb_traineer` (`id_traineer`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci</sql_create_table>
+</table>
+<table name="tb_minum" view="colnames">
+<left>488</left>
+<top>27</top>
+<width>107</width>
+<height>163</height>
+<sql_create_table>CREATE TABLE `tb_minum` (
+  `id_minum` int(10) NOT NULL,
+  `id_user` int(10) NOT NULL,
+  `tanggal` datetime NOT NULL,
+  `waktu` date NOT NULL,
+  `jumlah_air` float NOT NULL,
+  PRIMARY KEY (`id_minum`),
+  KEY `id_user` (`id_user`),
+  CONSTRAINT `tb_minum_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `tb_user` (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci</sql_create_table>
+</table>
+<table name="tb_progress" view="colnames">
+<left>245</left>
+<top>480</top>
+<width>141</width>
+<height>197</height>
+<sql_create_table>CREATE TABLE `tb_progress` (
+  `id_progress` int(10) NOT NULL,
+  `id_user` int(10) NOT NULL,
+  `tanggal` date NOT NULL,
+  `jumlah_langkah` float NOT NULL,
+  `kalori_harian` float NOT NULL,
+  `kalori_mingguan` float NOT NULL,
+  `kalori_bulanan` float NOT NULL,
+  PRIMARY KEY (`id_progress`),
+  KEY `id_user` (`id_user`),
+  CONSTRAINT `tb_progress_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `tb_user` (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci</sql_create_table>
+</table>
+<table name="tb_traineer" view="colnames">
+<left>757</left>
+<top>489</top>
+<width>108</width>
+<height>163</height>
+<sql_create_table>CREATE TABLE `tb_traineer` (
+  `id_traineer` int(11) NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `spesialis` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id_traineer`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci</sql_create_table>
+</table>
+<table name="tb_user" view="colnames">
+<left>784</left>
+<top>217</top>
+<width>100</width>
+<height>146</height>
+<sql_create_table>CREATE TABLE `tb_user` (
+  `id_user` int(10) NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(11) NOT NULL,
+  PRIMARY KEY (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>
