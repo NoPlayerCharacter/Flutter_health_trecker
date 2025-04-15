@@ -7,43 +7,128 @@ servers:
 
 components:
   schemas:
-    user:
+    User:
       type: object
       properties:
-        id:
+        id_user:
           type: integer
-        name:
+          format: int32
+        nama:
           type: string
+          maxLength: 255
         email:
           type: string
-        age:
+          format: email
+        password:
+          type: string
+          maxLength: 11
+
+    Traineer:
+      type: object
+      properties:
+        id_traineer:
           type: integer
-        createdAt:
+        nama:
           type: string
-        updatedAt:
+          maxLength: 255
+        spesialis:
           type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          maxLength: 255
+
+    Jadwal:
+      type: object
+      properties:
+        id_jadwal:
+          type: integer
+        id_user:
+          type: integer
+        id_traineer:
+          type: integer
+        tanggal:
+          type: string
+          format: date
+        waktu:
+          type: string
+          format: date-time
+        jenis_latihan:
+          type: string
+          maxLength: 255
+
+    Minum:
+      type: object
+      properties:
+        id_minum:
+          type: integer
+        id_user:
+          type: integer
+        tanggal:
+          type: string
+          format: date-time
+        waktu:
+          type: string
+          format: date
+        jumlah_air:
+          type: number
+          format: float
+
+    Progress:
+      type: object
+      properties:
+        id_progress:
+          type: integer
+        id_user:
+          type: integer
+        tanggal:
+          type: string
+          format: date
+        jumlah_langkah:
+          type: number
+          format: float
+        kalori_harian:
+          type: number
+          format: float
+        kalori_mingguan:
+          type: number
+          format: float
+        kalori_bulanan:
+          type: number
+          format: float
 
 paths:
   /users:
     get:
-      description: 'Endpoint untuk mendapatkan semua data user'
+      summary: Get all users
       responses:
         '200':
-          description: Berhasil
+          description: List of users
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/user'
-        '500':
-          description: Server Gagal
-        '403': 
-          description: Tidak diizinkan
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created
 
   /users/{id}:
     get:
-      description: 'Endpoint untuk mendapatkan data user berdasarkan ID'
+      summary: Get a user by ID
       parameters:
         - name: id
           in: path
@@ -52,34 +137,13 @@ paths:
             type: integer
       responses:
         '200':
-          description: Berhasil
+          description: User data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
-        '500':
-          description: Server Gagal
-        '403': 
-          description: Tidak diizinkan
-
-    delete:
-      description: 'Endpoint untuk menghapus data user berdasarkan ID'
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Berhasil
-        '500':
-          description: Server Gagal
-        '403': 
-          description: Tidak diizinkan
-
+                $ref: '#/components/schemas/User'
     put:
-      description: 'Endpoint untuk mengubah data user berdasarkan ID'
+      summary: Update a user
       parameters:
         - name: id
           in: path
@@ -91,22 +155,294 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                age:
-                  type: integer
+              $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: Berhasil
+          description: User updated
+    delete:
+      summary: Delete a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: User deleted
+
+  /traineers:
+    get:
+      summary: Get all traineers
+      responses:
+        '200':
+          description: List of traineers
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
-        '500':
-          description: Server Gagal
-        '403': 
-          description: Tidak diizinkan
+                type: array
+                items:
+                  $ref: '#/components/schemas/Traineer'
+    post:
+      summary: Create a new traineer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Traineer'
+      responses:
+        '201':
+          description: Traineer created
+
+  /traineers/{id}:
+    get:
+      summary: Get a traineer by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Traineer data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Traineer'
+    put:
+      summary: Update a traineer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Traineer'
+      responses:
+        '200':
+          description: Traineer updated
+    delete:
+      summary: Delete a traineer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Traineer deleted
+
+  /jadwals:
+    get:
+      summary: Get all jadwals
+      responses:
+        '200':
+          description: List of jadwal
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Jadwal'
+    post:
+      summary: Create a new jadwal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Jadwal'
+      responses:
+        '201':
+          description: Jadwal created
+
+  /jadwals/{id}:
+    get:
+      summary: Get a jadwal by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Jadwal data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Jadwal'
+    put:
+      summary: Update a jadwal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Jadwal'
+      responses:
+        '200':
+          description: Jadwal updated
+    delete:
+      summary: Delete a jadwal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Jadwal deleted
+
+  /minum:
+    get:
+      summary: Get all minum entries
+      responses:
+        '200':
+          description: List of minum
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Minum'
+    post:
+      summary: Create a new minum entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Minum'
+      responses:
+        '201':
+          description: Minum entry created
+
+  /minum/{id}:
+    get:
+      summary: Get a minum entry by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Minum data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Minum'
+    put:
+      summary: Update a minum entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Minum'
+      responses:
+        '200':
+          description: Minum updated
+    delete:
+      summary: Delete a minum entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Minum deleted
+
+  /progress:
+    get:
+      summary: Get all progress entries
+      responses:
+        '200':
+          description: List of progress
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Progress'
+    post:
+      summary: Create a new progress entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Progress'
+      responses:
+        '201':
+          description: Progress entry created
+
+  /progress/{id}:
+    get:
+      summary: Get a progress entry by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Progress data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Progress'
+    put:
+      summary: Update a progress entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Progress'
+      responses:
+        '200':
+          description: Progress updated
+    delete:
+      summary: Delete a progress entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Progress deleted
